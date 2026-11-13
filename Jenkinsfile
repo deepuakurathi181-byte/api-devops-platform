@@ -23,17 +23,23 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'SonarQube analysis will be configured next'
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarQube-Server') {
+                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
+                    }
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'CI Pipeline completed successfully!'
+            echo 'CI Pipeline and SonarQube analysis completed successfully!'
         }
         failure {
-            echo 'CI Pipeline failed. Check the console output.'
+            echo 'Pipeline failed. Check the console output.'
         }
     }
 }
