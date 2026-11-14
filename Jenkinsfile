@@ -17,7 +17,8 @@ pipeline {
 
         stage('Run API Tests') {
             steps {
-                        bat '"C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m pytest -v --cov=main --cov-report=term --cov-report=xml:coverage.xml'}
+                bat '"C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python314\\python.exe" -m pytest -v --cov=main --cov-report=term --cov-report=xml:coverage.xml'
+            }
         }
 
         stage('SonarQube Analysis') {
@@ -47,11 +48,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker Connectivity Check') {
+            steps {
+                bat '"C:\\Users\\DELL\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" version'
+            }
+        }
     }
 
     post {
         success {
-            echo 'CI Pipeline and SonarQube analysis completed successfully!'
+            echo 'CI Pipeline, SonarQube analysis and Docker connectivity check completed successfully!'
         }
 
         failure {
