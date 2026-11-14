@@ -27,19 +27,21 @@ pipeline {
                     def scannerHome = tool 'SonarScanner'
 
                     withSonarQubeEnv('SonarQube-Server') {
-                        bat 'dir sonar-project.properties'
+                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
+                    }
+                }
+            }
+        }
 
-                        bat """
-                            call "${scannerHome}\\bin\\sonar-scanner.bat" --version > scanner-version.txt 2>&1
-                            set SCANNER_EXIT=%ERRORLEVEL%
-                            type scanner-version.txt
-                            echo Scanner exit code: %SCANNER_EXIT%
-                            exit /b %SCANNER_EXIT%
-                        """
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        def qualityGate = waitForQualityGate()
 
-                        bat """
-                            call "${scannerHome}\\bin\\sonar-scanner.bat" -X
-                        """
+                        if (qualityGate.status != 'OK') {
+                            error "Quality Gate failed: ${qualityGate.status}"
+                        }
                     }
                 }
             }
