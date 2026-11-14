@@ -27,7 +27,13 @@ pipeline {
                     def scannerHome = tool 'SonarScanner'
 
                     withSonarQubeEnv('SonarQube-Server') {
-                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
+                        bat """
+                            call "${scannerHome}\\bin\\sonar-scanner.bat" -X > sonar-debug.log 2>&1
+                            set SCANNER_EXIT=%ERRORLEVEL%
+                            type sonar-debug.log
+                            echo Scanner exit code: %SCANNER_EXIT%
+                            exit /b %SCANNER_EXIT%
+                        """
                     }
                 }
             }
