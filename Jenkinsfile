@@ -29,9 +29,17 @@ pipeline {
                     withSonarQubeEnv('SonarQube-Server') {
                         bat 'dir sonar-project.properties'
 
-                        bat "call \"${scannerHome}\\bin\\sonar-scanner.bat\" --version"
+                        bat """
+                            call "${scannerHome}\\bin\\sonar-scanner.bat" --version > scanner-version.txt 2>&1
+                            set SCANNER_EXIT=%ERRORLEVEL%
+                            type scanner-version.txt
+                            echo Scanner exit code: %SCANNER_EXIT%
+                            exit /b %SCANNER_EXIT%
+                        """
 
-                        bat "call \"${scannerHome}\\bin\\sonar-scanner.bat\" -X"
+                        bat """
+                            call "${scannerHome}\\bin\\sonar-scanner.bat" -X
+                        """
                     }
                 }
             }
