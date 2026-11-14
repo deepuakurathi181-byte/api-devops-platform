@@ -28,8 +28,10 @@ pipeline {
 
                     withSonarQubeEnv('SonarQube-Server') {
                         bat 'dir sonar-project.properties'
-                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" --version"
-                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -X"
+
+                        bat "call \"${scannerHome}\\bin\\sonar-scanner.bat\" --version"
+
+                        bat "call \"${scannerHome}\\bin\\sonar-scanner.bat\" -X"
                     }
                 }
             }
@@ -40,6 +42,7 @@ pipeline {
         success {
             echo 'CI Pipeline and SonarQube analysis completed successfully!'
         }
+
         failure {
             echo 'Pipeline failed. Check the console output.'
         }
